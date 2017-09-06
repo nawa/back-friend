@@ -1,0 +1,33 @@
+version: "3"
+
+services:
+  postgres:
+    image: postgres:9.6
+    container_name: backfriend-postgres
+    hostname: backfriend-postgres
+    environment:
+      POSTGRES_DB: backfriend
+      POSTGRES_USER: backfriend
+      POSTGRES_PASSWORD: backfriend
+    ports:
+      - "5433:5432"
+
+  rest:
+    image: nawa/backfriend:latest
+    container_name: backfriend-rest
+    volumes:
+      - ./functional-tests-config.yml:/app/config/config.yml
+    links:
+        - postgres
+    ports:
+      - "8888:8080"
+
+  functional-tests:
+      image: golang:1.8
+      container_name: backfriend-functional-tests
+      volumes:
+        - ../:/go/src/github.com/nawa/back-friend
+      working_dir: /go/src/github.com/nawa/back-friend/functional-tests
+      links:
+          - rest
+      command: bash -c "go get github.com/go-resty/resty && go get github.com/stretchr/testify && go test ./..."

@@ -1,0 +1,9 @@
+port: 8080
+
+sqlDb:
+    type: postgres
+    host: backfriend-postgres
+    port: 5432
+    name: backfriend
+    user: backfriend
+    password: backfriend
